@@ -1,8 +1,10 @@
 import time
 
 class User:
-    def __init__(self, username, password):
+    def __init__(self,full_name, username, email, password):
+        self.full_name = full_name
         self.username = username
+        self.email = email
         self.password = password
         self.balance = 0.0
         self.transactions = []
@@ -19,7 +21,7 @@ class User:
         return True
 
     def show_passbook(self):
-        print(f"\nPassbook for {self.username}:")
+        print(f"\nPassbook for {self.full_name} ({self.username}):")
         print("Type        Amount      Date and Time")
         print("----------------------------------")
         for txn in self.transactions:
@@ -30,16 +32,21 @@ class BankingSystem:
     def __init__(self):
         self.users = {}
 
-    def register_user(self, username, password):
-        if username in self.users:
-            print("Username already exists. Please choose a different username.")
-            return False
-        self.users[username] = User(username, password)
+    def register_user(self, full_name, username, email, password):
+        for user in self.users.values():
+            if user.username == username or user.email == email:
+                print("Username or email already exists. Please choose a different one.")
+                return False
+        self.users[username] = User(full_name, username, email, password)
         print("Registration successful!")
         return True
 
-    def login_user(self, username, password):
-        user = self.users.get(username)
+    def login_user(self, login_input, password):
+        user = None
+        for u in self.users.values():
+            if u.username == login_input or u.email == login_input:
+                user = u
+                break
         if not user or user.password != password:
             print("Invalid username or password.")
             return None
@@ -55,16 +62,20 @@ class BankingSystem:
             choice = input("Enter your choice: ")
 
             if choice == '1':
+                full_name = input("Enter your full name: ")
                 username = input("Enter a username: ")
+                email = input("Enter your email: ")
                 password = input("Enter a password: ")
-                self.register_user(username, password)
+                self.register_user(full_name, username, email, password)
+
 
             elif choice == '2':
-                username = input("Enter your username: ")
+                login_input = input("Enter your username or email: ")
                 password = input("Enter your password: ")
-                user = self.login_user(username, password)
+                user = self.login_user(login_input, password)
                 if user:
                     self.user_menu(user)
+
 
             elif choice == '3':
                 print("Thank you for using the Banking System. Goodbye!")
@@ -75,7 +86,7 @@ class BankingSystem:
 
     def user_menu(self, user):
         while True:
-            print(f"\nWelcome {user.username}")
+            print(f"\nWelcome {user.full_name} ({user.username})")
             print("1. Deposit")
             print("2. Withdraw")
             print("3. Show Passbook")
