@@ -90,6 +90,19 @@ class BankingSystem:
         self.users[username] = User(full_name, username, email, password)
         print("Registration successful!")
         return True
+    
+    def show_registered_users(self):
+        if not self.users:
+            print("No users have registered yet.")
+            return
+
+        print("\nRegistered Users:")
+        print("-----------------------------------")
+        print(f"{'Full Name':<20} {'Username':<15} {'Email'}")
+        print("-----------------------------------")
+        for user in self.users.values():
+            print(f"{user.full_name:<20} {user.username:<15} {user.email}")
+        
 
     def login_user(self, login_input, password):
         user = None
@@ -108,7 +121,8 @@ class BankingSystem:
             print("\nWelcome to the Banking System")
             print("1. Register")
             print("2. Login")
-            print("3. Exit")
+            print("3. Show Registered Users")
+            print("4. Exit")
             choice = input("Enter your choice: ")
 
             if choice == '1':
@@ -126,6 +140,9 @@ class BankingSystem:
                     self.user_menu(user)
 
             elif choice == '3':
+                self.show_registered_users()
+
+            elif choice == '4':
                 print("Thank you for using the Banking System. Goodbye!")
                 break
 
